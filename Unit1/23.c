@@ -39,8 +39,10 @@ int main ()
 		else if (isCmt == 1)
 		{
 			if (s [i] == '\n')
+			{
 				isCmt = 0;
-			printf ("\n");
+				printf ("\n");
+			}
 		}
 		else
 		{
