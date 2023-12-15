@@ -1,2 +1,2 @@
 # C_Practice
-Solutions to exercises of K&amp;N C Programming Book.
+Solutions to exercises of K&amp;R C Programming Book.
