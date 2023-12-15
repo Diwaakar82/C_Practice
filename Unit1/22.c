@@ -18,26 +18,29 @@ int getlin (char s [], int lim, int foldlen)
 	
 	while (j < i)
 	{
-		if (s [j] == ' ')
-			space = j;
-		if (k == foldlen)
+		if (s [j] == ' ' || s [j] == '\n' || s [j] == '\0')
+		{
+			space++;
+			while (space < j)
+				printf ("%c", s [space++]);
+			k = space;
+			printf (" ");
+		}
+		if (k >= foldlen)
 		{
 			if (space == -1)
 			{
-				printf ("%c\n", s [j++]);
+				space++;
+				while (space < j)
+					printf ("%c", s [space++]);
 				k = 0;
-				continue;
 			}
-			j = space + 1;
+			j = space;
 			k = 0;
 			printf ("\n");
 		}
-		else
-		{
-			printf ("%c", s [j]);
-			j++;
-			k++;
-		}
+		j++;
+		k++;
 	}
 	
 	return i;
