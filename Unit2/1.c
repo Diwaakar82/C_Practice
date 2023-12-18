@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include <limits.h>
+#include <float.h>
 
 int main ()
 {
@@ -20,6 +21,13 @@ int main ()
         printf ("\nSigned short minimum: %d", SHRT_MIN);
         printf ("\nUnsigned short maximum: %d\n", USHRT_MAX);
 
+	printf ("\n\nSigned float maximum: %e", FLT_MAX);
+        printf ("\nSigned float minimum: %e", FLT_MIN);
+
+	printf ("\n\nSigned double maximum: %e", DBL_MAX);
+	printf ("\nSigned double minimum: %e", DBL_MIN);
+
+
 	printf ("\nUsing computation:\n");
         printf ("\nSigned integer maximum: %d", (int) ((unsigned int) ~0 >> 1));
         printf ("\nSigned integer minimum: %d", -(int) ((unsigned int) ~0 >> 1) - 1);
@@ -36,6 +44,7 @@ int main ()
         printf ("\n\nSigned short maximum: %d", (short) ((unsigned short) ~0 >> 1));
         printf ("\nSigned short minimum: %d", (short) ((unsigned short) ~0 >> 1) - 1);
         printf ("\nUnsigned short maximum: %d\n", (unsigned short) ~0);
+
 
 	return 0;
 }
