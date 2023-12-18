@@ -3,21 +3,20 @@
 //Remove common characters of two strings from the 1st string
 void squeeze (char str1 [], char str2 [], int length1, int length2)
 {
-	int counter [128] = {0};   //Counter to find count of each character
+	int check [128] = {0};   //Marking presence of each character
 	int i = 0;
-
-	while (i < length1)
-		counter [str1 [i++]] = 1;
 	
+	//Marking all characters of string 2
 	i = 0;
 	while (i < length2)
-		counter [str2 [i++]] = 0;
+		check [str2 [i++]] = 1;
 
 	i = 0;
 	int k = 0;
+	//Overwriting string 1 with characters not present in string 2 only
 	while (i < length1)
 	{
-		if (counter [str1 [i]])
+		if (!check [str1 [i]])
 			str1 [k++] = str1 [i];
 		i++;
 	}
