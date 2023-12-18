@@ -13,13 +13,14 @@ void squeeze (char s1 [], char s2 [], int n, int m)
 		cnt [s2 [i++]] = 0;
 
 	i = 0;
-
+	int k = 0;
 	while (i < n)
 	{
 		if (cnt [s1 [i]])
-			printf ("%c", s1 [i]);
+			s1 [k++] = s1 [i];
 		i++;
 	}
+	s1 [k] = '\0';
 }
 
 int getlin (char s [])
@@ -40,6 +41,6 @@ int main ()
 	int m = getlin (s2);
 
 	squeeze (s1, s2, n, m);
-	printf ("\n");
+	printf ("Squeezed string: %s\n", s1);
 	return 0;
 }
