@@ -1,30 +1,36 @@
 #include <stdio.h>
 #include <ctype.h>
 
-int htoi (char s [], int len)
+//Program to convert hexadecimal string to decimal equivalent.
+int htoi (char str [], int length)
 {
-	int n = 0, i = 0;
-	if (s [i] == '0')
+	int num = 0, i = 0;
+
+	//Skip 0x or 0X at the beginning
+	if (str [i] == '0')
 		i += 2;
 
-	while (i < len)
+	//Read character by character and compute the value
+	while (i < length)
 	{
-		if (s [i] >= '0' && s [i] <= '9')
-			n = 16 * n + s [i] - '0';
+		if (str [i] >= '0' && str [i] <= '9')
+			num = 16 * num + str [i] - '0';   
 		else
-			n = 16 * n + tolower (s [i]) - 'a' + 10;
+			num = 16 * num + tolower (str [i]) - 'a' + 10;   // Plus 10 as a is 10 in hexadecimal
 		i++;
 	}
-	return n;
+	return num;
 }
+
 int main ()
 {
-	char s [1000], c;
+	char str [1000], input;
 	int i = 0;
 
-	while ((c = getchar ()) != EOF && c != '\n')
-		s [i++] = c;
+	//Get string input
+	while ((input = getchar ()) != EOF && input != '\n')
+		str [i++] = input;
 	
-	printf ("\nInteger value of %s: %d\n", s, htoi (s, i));
+	printf ("\nInteger value of %s: %d\n", str, htoi (str, i));
 	return 0;
 }

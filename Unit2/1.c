@@ -2,6 +2,7 @@
 #include <limits.h>
 #include <float.h>
 
+//Program to find maximum and minimum values of int, long, float, char datatypes. 
 int main ()
 {
 	printf ("Using maximum values:\n");
@@ -20,13 +21,6 @@ int main ()
 	printf ("\n\nSigned short maximum: %d", SHRT_MAX);
         printf ("\nSigned short minimum: %d", SHRT_MIN);
         printf ("\nUnsigned short maximum: %d\n", USHRT_MAX);
-
-	printf ("\n\nSigned float maximum: %e", FLT_MAX);
-        printf ("\nSigned float minimum: %e", FLT_MIN);
-
-	printf ("\n\nSigned double maximum: %e", DBL_MAX);
-	printf ("\nSigned double minimum: %e", DBL_MIN);
-
 
 	printf ("\nUsing computation:\n");
         printf ("\nSigned integer maximum: %d", (int) ((unsigned int) ~0 >> 1));

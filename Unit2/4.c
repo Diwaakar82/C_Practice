@@ -1,46 +1,48 @@
 #include <stdio.h>
 
-void squeeze (char s1 [], char s2 [], int n, int m)
+//Remove common characters of two strings from the 1st string
+void squeeze (char str1 [], char str2 [], int length1, int length2)
 {
-	int cnt [128] = {0};
+	int counter [128] = {0};   //Counter to find count of each character
 	int i = 0;
 
-	while (i < n)
-		cnt [s1 [i++]] = 1;
+	while (i < length1)
+		counter [str1 [i++]] = 1;
 	
 	i = 0;
-	while (i < m)
-		cnt [s2 [i++]] = 0;
+	while (i < length2)
+		counter [str2 [i++]] = 0;
 
 	i = 0;
 	int k = 0;
-	while (i < n)
+	while (i < length1)
 	{
-		if (cnt [s1 [i]])
-			s1 [k++] = s1 [i];
+		if (counter [str1 [i]])
+			str1 [k++] = str1 [i];
 		i++;
 	}
-	s1 [k] = '\0';
+	str1 [k] = '\0';
 }
 
-int getlin (char s [])
+//Getting the input string
+int getlin (char str [])
 {
 	int i = 0;
-	char c;
+	char input;
 
-	while ((c = getchar ()) != EOF && c != '\n')
-		s [i++] = c;
+	while ((input = getchar ()) != EOF && input != '\n')
+		str [i++] = input;
 
 	return i;
 }
 
 int main ()
 {
-	char s1 [1000], s2 [1000];
-	int n = getlin (s1);
-	int m = getlin (s2);
+	char str1 [1000], str2 [1000];
+	int length1 = getlin (str1);
+	int length2 = getlin (str2);
 
-	squeeze (s1, s2, n, m);
-	printf ("Squeezed string: %s\n", s1);
+	squeeze (str1, str2, length1, length2);
+	printf ("Squeezed string: %s\n", str1);
 	return 0;
 }

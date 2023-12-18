@@ -1,16 +1,17 @@
 #include <stdio.h>
 
-int any (char s1 [], char s2 [], int n, int m)
+//Find first common character between the given two strings
+int any (char str1 [], char str2 [], int length1, int length2)
 {
-	int cnt [128] = {0};
+	int char_check [128] = {0}; //Mark presence of presence of characters available in the 2nd string 
 	int i = 0;
 
-	while (i < m)
-		cnt [s2 [i++]] = 1;
+	while (i < length2)
+		char_check [str2 [i++]] = 1;
 
 	i = 0;
-	while (i < n)
-		if (cnt [s1 [i]])
+	while (i < length1)
+		if (char_check [str1 [i]])
 			return i;
 		else
 			i++;
@@ -18,23 +19,24 @@ int any (char s1 [], char s2 [], int n, int m)
 	return -1;
 }
 
-int getlin (char s [])
+//Getting input string
+int getlin (char str [])
 {
 	int i = 0;
-	char c;
+	char input;
 
-	while ((c = getchar ()) != EOF && c != '\n')
-		s [i++] = c;
+	while ((input = getchar ()) != EOF && input != '\n')
+		str [i++] = input;
 
 	return i;
 }
 
 int main ()
 {
-	char s1 [1000], s2 [1000];
-	int n = getlin (s1);
-	int m = getlin (s2);
+	char str1 [1000], str2 [1000];
+	int length1 = getlin (str1);
+	int length2 = getlin (str2);
 
-	printf ("First common character: %d\n", any (s1, s2, n, m));
+	printf ("First common character: %d\n", any (str1, str2, length1, length2));
 	return 0;
 }
