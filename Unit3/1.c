@@ -1,5 +1,8 @@
 #include <stdio.h>
 
+//Improve the given binary search which does 2 conditional checks into just one check.
+
+//Function to perform binary search on an array.
 int binary_search (int arr [], int length, int element)
 {
 	int low = 0, high = length - 1;
