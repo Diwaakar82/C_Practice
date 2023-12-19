@@ -32,7 +32,7 @@ double atof (char input_number [])
 	number /= power;
 
 
-	if (input_number [i] == 'e')
+	if (input_number [i] == 'e' || input_number [i] == 'E')
 	{
 		i++;
 		int exp_sign = 0, exponent = 0;
