@@ -12,7 +12,7 @@ int main ()
 		if (i > 0 && input_str [i] == '-')	//If encountered a - check previous and next char.
 		{
 			char previous_char = input_str [i - 1] + 1, next_char = input_str [i + 1];
-			if (next_char > previous_char)                         //Checking for valid condition like a-z and not z-a
+			if (next_char >= previous_char)                         //Checking for valid condition like a-z and not z-a
 				while (next_char > previous_char)
 					modified_str [j++] = previous_char++;
 			else
