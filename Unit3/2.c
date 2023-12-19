@@ -47,7 +47,7 @@ int escape (char input_str [], int length, char modified_str [])
 int revert (char input_str [], int length)
 {
 	int i = 0, j = 0;
-
+	
 	while (i < length)
 	{
 		if (i + 1 < length && input_str [i] == '\\')
@@ -71,6 +71,8 @@ int revert (char input_str [], int length)
 		i++;
 		j++;
 	}
+
+	s [j] = '\0';
 	return j;
 	
 }
