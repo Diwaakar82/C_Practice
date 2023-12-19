@@ -1,5 +1,5 @@
 #include <stdio.h>
-#define abs(x) ((x >= 0) ? x : -(x))
+#define abs(x) ((x >= 0) ? x : -x)
 //Implement itoa (number to string) which handles the largest negative number.
 
 //Function to reverse the given string
