@@ -39,7 +39,6 @@ int getop (char input_str [])
 	i = 0;
 	if (!isdigit (c))
 	{
-		//printf ("&");
 		while (isalpha (input_str [++i] = c = getch ()) && c != ' ')
 		{
 			tolower (input_str [i]);
@@ -141,6 +140,7 @@ void clear ()
 	stack_ptr = 0;
 }
 
+//Perform mathematical operations
 void math_operation (char input_str [])
 {
 	if (!strcmp (input_str, "sin"))

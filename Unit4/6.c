@@ -138,6 +138,7 @@ void clear ()
 	stack_ptr = 0;
 }
 
+//Perform mathematical operations
 void math_operation (char input_str [])
 {
 	if (!strcmp (input_str, "sin"))
