@@ -249,7 +249,7 @@ int main ()
 					printf("Error: unknown command %s\n", input_str);
 				break;
 		}
-		variable = type;
+		variable = type;						//Stores previous character
 	}
 	return 0;
 }
