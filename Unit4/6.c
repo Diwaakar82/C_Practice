@@ -7,7 +7,7 @@
 #define NUMBER '0'
 #define NAME 'n'
 
-//Modify the given calculator program to handle sin, cos, tan, pow and exp
+//Modify the given calculator program to handle variables
 int stack_ptr = 0;
 int buffer_ptr = 0;
 
