@@ -7,7 +7,6 @@
 #define NUMBER '0'
 #define NAME 'n'
 
-
 //Modify the given calculator program to handle sin, cos, tan, pow and exp
 int stack_ptr = 0;
 int buffer_ptr = 0;
@@ -39,13 +38,11 @@ int getop (char input_str [])
 	i = 0;
 	if (!isdigit (c))
 	{
-		//printf ("&");
 		while (isalpha (input_str [++i] = c = getch ()) && c != ' ')
-		{
 			tolower (input_str [i]);
-		}
+		
 		input_str [i] = '\0';
-		printf ("String: %s\n", input_str);
+		//printf ("String: %s\n", input_str);
 
 		if (c != EOF)
 			ungetch (c);
@@ -163,9 +160,10 @@ void math_operation (char input_str [])
 
 int main ()
 {
-	int type;
+	int type, variable = 0;
 	int operator2, operator1;
 	char input_str [100];
+	double variables [26] = {0.0};
 
 	//Read input character by character
 	while ((type = getop (input_str)) != EOF) 
@@ -222,6 +220,13 @@ int main ()
                 		else
                 			printf("Error: zero divisor\n");
                 		break;
+			case '=':
+				pop ();
+				if (variable >= 'A' && variable <= 'Z')
+					variables [variable - 'A'] = pop ();
+				else
+					printf ("Error: Invalid variable\n");
+				break;
 			case 'p':						//Print the top element
 				show ();
 				break;
@@ -237,10 +242,14 @@ int main ()
 			case '\n':						//Print output of the line
 				printf ("%.8g\n", pop ());
 				break;
-			default:						//Undefined operator
-				printf("Error: unknown command %s\n", input_str);
+			default:				
+				if (type >= 'A' && type <= 'Z')			//Usage of variables
+					push (variables [type - 'A']);
+				else						//Unknwon command
+					printf("Error: unknown command %s\n", input_str);
 				break;
 		}
+		variable = type;
 	}
 	return 0;
 }
