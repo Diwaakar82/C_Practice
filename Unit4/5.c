@@ -1,11 +1,14 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <ctype.h>
+#include <math.h>
+#include <string.h>
 
 #define NUMBER '0'
+#define NAME 'n'
 
 
-//Add additional functionalities to the existing calculator program
+//Modify the given calculator program to handle sin, cos, tan, pow and exp
 int stack_ptr = 0;
 int buffer_ptr = 0;
 
@@ -34,11 +37,35 @@ int getop (char input_str [])
 	input_str [1] = '\0';
 	
 	//Return if found an operator
-	if (!isdigit (c) && c != '.' && c != '-')
-		return c;
+	//if (!isdigit (c) && c != '.' && c != '-')
+	//	return c;
 	
-	//If read character is - check if it's an unary or binary operator
+	//Read strings or characters
 	i = 0;
+	if (!isdigit (c))
+	{
+		//printf ("&");
+		while (isalpha (input_str [++i] = c = getch ()) && c != ' ')
+		{
+			tolower (input_str [i]);
+		}
+		input_str [i] = '\0';
+		printf ("String: %s\n", input_str);
+
+		if (c != EOF)
+			ungetch (c);
+
+		if (strlen (input_str) > 1)
+			return NAME;
+		else
+			return input_str [0];
+	}
+
+	//Return if found an operator
+        if (!isdigit (c) && c != '.' && c != '-')
+                return c;
+		
+	//If read character is - check if it's an unary or binary operator
 	if (c == '-')
 	{
 		if(isdigit (c = getch()) || c == '.')
@@ -88,7 +115,7 @@ double pop (void)
 void show ()
 {
 	if (stack_ptr > 0)
-		printf ("Top of the stack contains: %lf", values [stack_ptr - 1]);
+		printf ("Top of the stack contains: %lf\n", values [stack_ptr - 1]);
 	else
 		printf ("Error: Stack empty\n");
 }
@@ -119,6 +146,26 @@ void clear ()
 	stack_ptr = 0;
 }
 
+void math_operation (char input_str [])
+{
+	if (!strcmp (input_str, "sin"))
+		push (sin (pop ()));
+	else if (!strcmp (input_str, "cos"))
+                push (cos (pop ()));
+	else if (!strcmp (input_str, "tan"))
+                push (tan (pop ()));
+	else if (!strcmp (input_str, "exp"))
+                push (exp (pop ()));
+	else if (!strcmp (input_str, "pow"))
+        {
+		double operand2 = pop ();
+		push (pow (pop (), operand2));
+		show ();
+	}
+	else
+		printf ("Error: %s not supported\n", input_str);
+}
+
 int main ()
 {
 	int type;
@@ -132,6 +179,9 @@ int main ()
 		{
 			case NUMBER:						//Push to stack if a number
 				push (atof (input_str));
+				break;
+			case NAME:						//Perform corresponding math operation
+				math_operation (input_str);
 				break;
 			case '+':						//Add
 				push (pop () + pop ());
