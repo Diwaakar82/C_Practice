@@ -69,7 +69,7 @@ void push (double f)
 	if (stack_ptr < 100)
 		values [stack_ptr++] = f;
 	else
-		printf("error: stack full, can't push %g\n",f);
+		printf("Error: stack full, can't push %g\n",f);
 }
 
 //Remove from stack
@@ -79,11 +79,45 @@ double pop (void)
 		return values [--stack_ptr];
 	else 
 	{
-		printf ("error: stack empty\n");
+		printf ("Error: stack empty\n");
 		return 0.0;
 	}
 }
 
+//Print top of stack
+void show ()
+{
+	if (stack_ptr > 0)
+		printf ("Top of the stack contains: %lf", values [stack_ptr - 1]);
+	else
+		printf ("Error: Stack empty\n");
+}
+
+//Duplicate top of stack
+void duplicate ()
+{
+	if (stack_ptr > 0)
+	{
+		values [stack_ptr] = values [stack_ptr - 1];
+		stack_ptr++;
+	}
+	else
+		printf ("Error: Stack empty\n");
+}
+
+//Swap the top two numbers
+void swap ()
+{
+	double number2 = pop (), number1 = pop ();
+	push (number2);
+	push (number1);
+}
+
+//Empty the stack
+void clear ()
+{
+	stack_ptr = 0;
+}
 
 int main ()
 {
@@ -143,11 +177,23 @@ int main ()
                 		else
                 			printf("Error: zero divisor\n");
                 		break;
-			case '\n':
-				printf ("\t%.8g\n", pop ());
+			case 'p':						//Print the top element
+				show ();
 				break;
-			default:
-				printf("error: unknown command %s\n", input_str);
+			case 'd':						//Duplicate the top element
+				duplicate ();
+				break;
+			case 's':						//Swap the top two elements
+				swap ();
+				break;
+			case 'c':						//Clear the stack
+				clear ();
+				break;
+			case '\n':						//Print output of the line
+				printf ("%.8g\n", pop ());
+				break;
+			default:						//Undefined operator
+				printf("Error: unknown command %s\n", input_str);
 				break;
 		}
 	}
