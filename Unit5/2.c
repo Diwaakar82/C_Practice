@@ -1,7 +1,7 @@
 #include <stdio.h>
 #include <ctype.h>
 
-//Modify the getint function to handle number not following + or - properly
+//Write a getfloat function to handle floating point numbers
 char buffer [1000];
 int buffer_ptr = 0;
 
@@ -21,9 +21,10 @@ void ungetch (int c)
 }
 
 //Read and number and store in the array
-int getint (int *number)
+int getfloat (float *number)
 {
 	int c, sign;
+	float power;
 
 	//Skip blanks
 	while (isspace (c = getch()));
@@ -49,9 +50,21 @@ int getint (int *number)
 	//Read consecutive numbers
 	for (*number = 0; isdigit (c); c = getch ())
 		*number = 10 * *number + (c - '0');
+	
+	if (c == '.')
+		c = getch ();
+	
+	//calculate the fractional part
+	for (power = 1; isdigit (c); c = getch ())
+	{
+		power *= 10;
+		*number = 10 * *number + (c - '0');
+	}
 
-	//Change sign
+	//Change sign and convert number to decimal form
 	*number *= sign;
+	*number /= power;
+
 	if (c != EOF)
 		ungetch (c);
 	return c;
@@ -59,17 +72,18 @@ int getint (int *number)
 
 int main ()
 {
-	int i, length = 0, numbers [1000], getint (int *);
+	int i, length = 0;
+	float numbers [1000];
 	
-	//Read characters one by one and call the getint function
-	while (length < 1000 && getint (&numbers [length]) != EOF)
+	//Read characters one by one and call the getfloat function
+	while (length < 1000 && getfloat (&numbers [length]) != EOF)
 		if (numbers [length])
 			length++;
 	
 	//Print the stored numbers
 	printf ("\nStored numbers:\n");
 	for (i = 0; i <= length; i++)
-		printf ("%d ", numbers [i]);
+		printf ("%f ", numbers [i]);
 	printf ("\n");
 	return 0;
 }
