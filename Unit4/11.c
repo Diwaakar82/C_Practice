@@ -5,20 +5,12 @@
 #define NUMBER '0'
 
 
-//Modify the given calculator program to handle modulo operator
+//Modify the given calculator program using a static variable to remove the need of ungetch
 int stack_ptr = 0;
 int buffer_ptr = 0;
 
 double values [100];
 char buffer [100];
-
-//Add character to the buffer
-void ungetch (int c) {
-    if (buffer_ptr >= 100)
-        printf("ungetch: too many characters\n");
-    else
-        buffer [buffer_ptr++] = c;
-}
 
 //Read character from buffer
 int getch (void) 
