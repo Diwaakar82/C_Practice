@@ -19,7 +19,7 @@ int readlines(char *lineptr[], int maxlines)
 }
 
 Updated function:
-int readlines (char *lineptr [], char *read_line [], int maxlines)
+int readlines (char *lineptr [], char *read_line, int maxlines)
 {
 	int length, nlines = 0;
 	char line [MAXLEN], *ptr = read_line;
