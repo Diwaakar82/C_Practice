@@ -1,0 +1,41 @@
+Update the below readlines function and remove the alloc function
+
+Existing function:
+int readlines(char *lineptr[], int maxlines)
+{
+	int len, nlines;
+	char *p, line [MAXLEN];
+	nlines = 0;
+	while ((len = getline(line, MAXLEN)) > 0)
+	if (nlines >= maxlines || (p = alloc (len)) == NULL)
+		return -1;
+	else 
+	{
+		line [len-1] = '\0';
+		strcpy (p, line);
+		lineptr [nlines++] = p;
+	}
+	return nlines;
+}
+
+Updated function:
+int readlines (char *lineptr [], char *read_line [], int maxlines)
+{
+	int length, nlines = 0;
+	char line [MAXLEN], *ptr = read_line;
+	char *line_end = read_line + MAXSTOR;
+	
+	//Read lines one by one until encounter an empty line
+	while ((length = getlin (line, MAXLEN)) > 0)
+		if (nlines >= maxlines || ptr + length > line_end)	//If reached maximum storage limit exit
+			return -1;
+		else
+		{
+			line [length - 1] = '\0';
+			strcpy (ptr, line);
+			lineptr [nlines++] = ptr;		//An array of pointers to various lines
+			ptr += length;
+		}
+
+	return nlines;
+}
