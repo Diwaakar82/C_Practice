@@ -89,10 +89,12 @@ int main (int argc, char *argv [])
 	double operand2;
 	
 	values [0] = 8;
-
+	
 	while (--argc)
 	{
 		ungets (" ");
+
+		//Read the string arguements passed
 		ungets (*++argv);
 
 		switch (getop (input_str))
