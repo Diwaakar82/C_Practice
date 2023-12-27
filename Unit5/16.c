@@ -3,7 +3,7 @@
 #include <ctype.h>
 #include <stdlib.h>
 
-//Update given qsort function to handle -f which looks at ignores the case
+//Update given qsort function to handle -d which considers only numbers, letters and blanks for comparison
 char *lines [1000];
 
 static char alloc_buffer [1000];
@@ -119,9 +119,32 @@ int numcmp(char *s1, char *s2)
 		return 0;
 }
 
-//Compare character by character ignoring case
+//Compare character by character ignoring case and based on -d flag
 int charcmp (char *s1, char *s2)
 {
+	char ch1, ch2;
+	int isFold = (option & 4) ? 1 : 0;
+	int isDir = (option & 8) ? 1 : 0;
+
+	do 
+	{
+		if (isDir)
+		{
+			while (!isalnum (*s1) && *s1 != ' ' && *s1 != '\0')
+				s1++;
+			while (!isalnum (*s2) && *s2 != ' ' && *s2 != '\0')
+				s2++;
+		}
+		
+		ch1 = isFold ? tolower (*s1) : *s1;
+		s1++;
+		ch2 = isFold ? tolower (*s2) : *s2;
+		s2++;
+		
+		if (ch1 == ch2 && ch1 == '\0')
+			return 0; 
+	}while (ch1 == ch2);
+	
 	for (; tolower (*s1) == tolower (*s2); s1++, s2++)
 		if (*s1 == '\0')
 			return 0;
@@ -149,6 +172,9 @@ int main (int argc, char *argv[])
 				case 'f':
 					option |= 4;
 					break;
+				case 'd':
+					option != 8;
+					break;
 				default:
 					printf ("Illegal option\n");
 					argc = 1;
@@ -163,10 +189,8 @@ int main (int argc, char *argv[])
 	{
 		if (option & 1)
             q_sort((void **) lineptr, 0, nlines - 1, (int (*)(void *, void *)) numcmp);
-		else if (option & 4)
+		else
 			q_sort((void **) lineptr, 0, nlines - 1, (int (*)(void *, void *)) charcmp);
-        else
-           	q_sort((void **) lineptr, 0, nlines - 1, (int (*)(void *, void *)) strcmp);
 	} 
 	else 
 	{
