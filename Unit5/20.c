@@ -112,17 +112,22 @@ int search (char *ptr, char *types [])
 	int i = 0;
 	while (i < 3 && !strcmp (ptr, types [i++]));
 	
-	return i == 3;
+	return (i <= 3);
 }
 
 //Check if token is a type specifier
 int typespec ()
 {
+	
 	static char *types [] = {"char", "int", "void"};
 	char *ptr = token;
+	printf ("#%s", ptr);
 	
 	if (!search (ptr, types))
+	{
+		printf ("^");
 		return NO;
+	}
 	else
 		return YES;
 }
@@ -197,10 +202,22 @@ void dirdcl ()
 	int type;
 	void dcl ();
 	
-	// dirdcl -> (dcl) 
 	if (tokenType == '(')
 	{
-		while ((type = gettoken ()) == PARENTHESIS || type == BRACKETS || type == '(')
+		dcl ();
+		if (tokenType != ')')
+			error_msg ("Missing ')'\n");
+	}
+	//dirdcl -> name
+	else if (tokenType == NAME)
+		if (name [0] == '\0')
+			strcpy (name, token);
+	else
+		prevToken = YES;
+		
+	// dirdcl -> (dcl) 
+
+	while ((type = gettoken ()) == PARENTHESIS || type == BRACKETS || type == '(')
 		if (type == PARENTHESIS)
 			strcat (output, " function returning");
 		else if (type == '(')
@@ -214,19 +231,7 @@ void dirdcl ()
 			strcat (output, " array");
 			strcat (output, token);
 			strcat (output, " of");
-		}
-		dcl ();
-		if (tokenType != ')')
-			error_msg ("Missing ')'\n");
-	}	
-	//dirdcl -> name
-	else if (tokenType == NAME)
-		if (name [0] == '\0')
-			strcpy (name, token);
-	else
-		prevToken = YES;
-		
-	
+		}	
 }
 
 //dcl productions
