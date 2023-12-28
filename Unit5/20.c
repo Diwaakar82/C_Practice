@@ -121,7 +121,6 @@ int typespec ()
 	
 	static char *types [] = {"char", "int", "void"};
 	char *ptr = token;
-	printf ("#%s", ptr);
 	
 	if (!search (ptr, types))
 	{
@@ -147,7 +146,6 @@ int typequal ()
 //Declaration specification
 void dclspec ()
 {
-	printf ("dclspec\n");
 	void dcl ();
 	
 	char temp [100];
@@ -185,7 +183,6 @@ void dclspec ()
 //Parse a parameter declarator
 void parmdcl ()
 {
-	printf ("parmdcl\n");
 	do 
 	{
 		dclspec ();
@@ -198,7 +195,6 @@ void parmdcl ()
 //dirdcl productions
 void dirdcl ()
 {
-	printf ("dirdcl\n");
 	int type;
 	void dcl ();
 	
@@ -237,7 +233,6 @@ void dirdcl ()
 //dcl productions
 void dcl ()
 {
-	printf ("dcl\n");
 	int no_of_stars = 0;
 	
 	while (gettoken () == '*')
