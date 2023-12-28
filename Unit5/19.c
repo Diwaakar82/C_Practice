@@ -2,7 +2,7 @@
 #include <string.h>
 #include <ctype.h>
 
-//dcl with error recovery
+//Modified undcl to handle redundant parenthesis
 enum { NAME, PARENTHESIS, BRACKETS };
 enum { NO, YES };
 
@@ -151,16 +151,45 @@ void dcl ()
 		strcat (output, " pointer to");
 }
 
+//Get the next token and push it back
+int nexttoken ()
+{
+	int type;
+	type = gettoken ();
+	prevToken = YES;
+	
+	return type;
+}
+
 int main ()
 {
+	int type;
+	char temp [100];
+	
 	while(gettoken() != EOF)        
     {
-        strcpy(datatype, token);
-        output[0] = '\0';
-        dcl();
-        if(tokenType != '\n')
-            printf("syntax error\n");
-        printf("%s: %s %s\n", name, output, datatype);
+        strcpy (output, token);
+        
+        while ((type = gettoken ()) != '\n')
+        	if (type == PARENTHESIS || type == BRACKETS)
+        		strcat (output, token);
+        	else if (type == '*')
+        	{
+        		if ((type = nexttoken ()) == PARENTHESIS || type == BRACKETS)
+        			sprintf (temp, "(*%s)", output);
+        		else
+        			sprintf (temp, "*%s", output);
+        		strcpy (output, temp);
+        	}
+        	else if (type == NAME)
+        	{
+        		sprintf (temp, "%s %s", token, output);
+        		strcpy (output, temp);
+        	}
+        	else
+        		printf ("Invalid input %s\n", token);
+        		
+        printf ("%s\n", output);
     }
 	return 0;
 }
