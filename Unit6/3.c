@@ -3,12 +3,20 @@
 #include <string.h>
 #include <stdlib.h>
 
-//Group variable names based on first num characters
+//List all words in the document along with line numbers ignoring noise words.
 
+//List to maintain line numbers
+struct linked_list
+{
+	int line_number;
+	struct linked_list *next;
+};
+
+//Tree node
 struct tree_node
 {
 	char *word;
-	int match;
+	struct linked_list *lines;
 	struct tree_node *left, *right;
 };
 
@@ -63,11 +71,13 @@ int getword (char *word, int limit)
 	int c, d;
 	char *word_ptr = word;
 	
-	while (isspace (c = getch ()));
+	//Skip space characters
+	while ((c = getch ()) == ' ' || c == '\t');
 	
 	if (c != EOF)
 		*word_ptr++ = c;
-		
+	
+	//Read words
 	if (isalpha (c) || c == '_' || c == '#')
 	{
 		for (; --limit; word_ptr++)
@@ -77,6 +87,7 @@ int getword (char *word, int limit)
 				break;
 			}
 	}
+	//Ignore string literals
 	else if (c == '\'' || c == '"')
 	{
 		for (; --limit; word_ptr++)
@@ -90,7 +101,7 @@ int getword (char *word, int limit)
 			else if (*word_ptr == EOF)
 				break;
 	}
-	
+	//Ignore comments
 	else if (c == '/')
 	{
 		if ((d = getch ()) == '*')
@@ -108,50 +119,89 @@ int getword (char *word, int limit)
 //Print tree in order (inorder traversal)
 void treexprint (struct tree_node *ptr)
 {
+	struct linked_list *temp;
+	
 	if (ptr)
 	{
 		treexprint (ptr -> left);
-		if (ptr -> match)
-			printf ("%s\n", ptr -> word);
+		printf ("%s: ", ptr -> word);
+		for (temp = ptr -> lines; temp; temp = temp -> next)
+			printf ("%d ", temp -> line_number);
+		printf ("\n");
 		treexprint (ptr -> right);
 	}
 }
 
-//Compare words and update the match member of tree_node
-int compare (char *str, struct tree_node *ptr, int number, int *found)
+//Allocate a linked list node
+struct linked_list *lalloc ()
 {
-	int i;
-	char *t = ptr -> word;
+	return (struct linked_list *) malloc (sizeof (struct linked_list));
+}
+
+//Identify noisewords
+int noiseword (char *word)
+{
+	char *noisewords [] = {"a", "an", "and", "are", "in", "is", "of", "or", "that", "the", "this", "to"};
 	
-	for (i = 0; *str == *t; i++, str++, t++)
-		if (*str == '\0')
-			return 0;
-			
-	if (i >= number)
+	int condition, mid, low = 0;
+	int high = sizeof (noisewords) / sizeof (char *) - 1;
+	
+	//Binary search to find if matches any noise word
+	while (low <= high)
 	{
-		*found = 1;
-		ptr -> match = 1;
+		mid = low + (high - low) / 2;
+		if ((condition = strcmp (word, noisewords [mid])) < 0)
+			high = mid - 1;
+		else if (condition > 0)
+			low = mid + 1;
+		else
+			return mid;
 	}
 	
-	return *str - *t;
+	return -1;
+}
+
+//Add line number to the linked list
+void add_line (struct tree_node *ptr, int line_number)
+{
+	struct linked_list *temp;
+
+	temp = ptr -> lines;
+	while (temp -> next && temp -> line_number != line_number)
+		temp = temp -> next;
+		
+	if (temp -> line_number != line_number)
+	{
+		temp -> next = lalloc ();
+		temp -> next -> line_number = line_number;
+		temp -> next -> next = NULL;
+	} 
 }
 
 //Add node with word at or below ptr
-struct tree_node *addtreex (struct tree_node *ptr, char *word, int number, int *found)
+struct tree_node *addtreex (struct tree_node *ptr, char *word, int line_number)
 {
 	int condition;
 	
+	//Create new node
 	if (!ptr)
 	{
 		ptr = talloc ();
 		ptr -> word = strdup (word);
-		ptr -> match = *found;
+		ptr -> lines = lalloc ();
+		ptr -> lines -> line_number = line_number;
+		ptr -> lines -> next = NULL;
 		ptr -> left = ptr -> right = NULL;
 	}
-	else if ((condition = compare (word, ptr, number, found)) < 0)
-		ptr -> left = addtreex (ptr -> left, word, number, found);
+	//If word already exists add line number
+	else if (!(condition = strcmp (word, ptr -> word)))
+		add_line (ptr, line_number);
+	//Traverse left subtree
+	else if (condition < 0)
+		ptr -> left = addtreex (ptr -> left, word, line_number);
+	//Traverse right subtree
 	else if (condition > 0)
-		ptr -> right = addtreex (ptr -> right, word, number, found);
+		ptr -> right = addtreex (ptr -> right, word, line_number);
 	return ptr;
 }
 
@@ -160,16 +210,15 @@ int main (int argc, char *argv [])
 	struct tree_node *root;
 	char word [100];
 	
-	int found = 0;
-	int number;
+	int line_number = 1;
 	
-	number = (--argc && (*++argv)[0] == '-') ? atoi (argv [0] + 1) : 6;
 	root = NULL;
 	while (getword (word, 100) != EOF)
 	{
-		if (isalpha (word [0]) && strlen (word) >= number)
-			root = addtreex (root, word, number, &found);
-		found = 0;
+		if (isalpha (word [0]) && noiseword (word) == -1)
+			root = addtreex (root, word, line_number);
+		else if (word [0] == '\n')
+			line_number++;
 	}
 	
 	printf ("Printing tree nodes:\n");
