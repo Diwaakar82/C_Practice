@@ -22,46 +22,72 @@ void ungetch (int c)
         buffer [buffer_ptr++] = c;
 }
 
-//Read and return the next word
+//Skip commented characters
+int comment ()
+{
+	int c;
+	
+	while ((c = getch ()) != EOF)
+		if (c == '*')
+			if ((c = getch ()) == '/')
+				break;
+			else
+				ungetch (c); 
+		else if (c == '/')
+		{
+			while ((c = getch ()) != '\n');
+			break;
+		}
+		
+		return c;
+}
+
+//Get next word or character from input
 int getword (char *word, int limit)
 {
-	int c, t;
-	char *ptr = word;
+	int c, d;
+	char *word_ptr = word;
 	
 	while (isspace (c = getch ()));
 	
-	//ungetch (c);
+	if (c != EOF)
+		*word_ptr++ = c;
+		
 	if (isalpha (c) || c == '_' || c == '#')
 	{
-		*ptr++ = c;
-		for (; --limit; ptr++)
-		{
-			if (!isalnum (*ptr = getch ()) && *ptr != '_')
+		for (; --limit; word_ptr++)
+			if (!isalnum (*word_ptr = getch ()) && *word_ptr != '_')
 			{
-				ungetch (*ptr);
+				ungetch (*word_ptr);
 				break;
 			}
-		}
-		return word [0];
 	}
+	else if (c == '\'' || c == '"')
+	{
+		for (; --limit; word_ptr++)
+			if ((*word_ptr = getch ()) == '\\')
+				*++word_ptr = getch ();
+			else if (*word_ptr == c)
+			{
+				word_ptr++;
+				break;
+			}
+			else if (*word_ptr == EOF)
+				break;
+	}
+	
 	else if (c == '/')
 	{
-		if (c = getch () == '/')
-			while (getch () == '\n');
-		else if (c == '*')
-		{	
-			c = getch ();
-			while (c != '*' && (c = getch ()) != '/');
-		}
+		if ((d = getch ()) == '*')
+			c = comment ();
+		else if (d == '/')
+			while ((c = getch ()) != '\n');
+		else
+			ungetch (d);
 	}
-	else if (c == '\"')
-		while (getch () != '\"');
 	
-	if (c != EOF)
-		*ptr++ = c;
-	*ptr = '\0';
-	
-	return word [0];
+	*word_ptr = '\0';
+	return c;
 }
 
 int main ()
