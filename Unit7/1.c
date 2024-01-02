@@ -2,6 +2,7 @@
 #include <string.h>
 #include <ctype.h>
 
+//Exhibit tolower or toupper based on command line arguement
 int main (int argc, char *argv [])
 {
 	int c;
