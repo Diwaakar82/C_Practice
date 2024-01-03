@@ -17,12 +17,9 @@ void minscanf (char *fmt, ...)
 	
 	for (ptr = fmt; *ptr; ptr++)
 	{
-		//Print all character if not %
+		//Skip all character if not %
 		if (*ptr != '%')
-		{
-			putchar (*ptr);
 			continue;
-		}
 		
 		switch (*++ptr)
 		{
