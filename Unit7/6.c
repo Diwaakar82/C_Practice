@@ -32,7 +32,7 @@ void lineCompare (FILE *file_pointer1, FILE *file_pointer2)
 	}while (line_pointer1 == line1 && line_pointer2 == line2);
 	
 	//Both files ended
-	if (line_pointer1 != line1 && line_pointer2 != line2)
+	if (line_pointer1 && line_pointer2)
 		printf ("Same files\n");
 }
 
