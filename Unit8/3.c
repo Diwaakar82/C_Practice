@@ -2,7 +2,7 @@
 #include <stdlib.h>
 #include <sys/syscall.h>
 
-//Modify fopen and _fillbuf with fields instead of bit operations
+//Design _flushbuf, fclose and fflush
 
 //Read and write permissions for owner, group and others
 #define PERMS 0666
