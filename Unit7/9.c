@@ -19,4 +19,4 @@ int main ()
 	printf ("Usage of isupper as function: %d\n", isupper ('R'));
 	printf ("Usage of isupper as macro: %d\n", isUpper ('R'));
 	return 0;
-}
+}	
