@@ -13,6 +13,7 @@ void find_pattern (FILE *file_ptr, char *file_name, char *pattern, int options)
 	while (fgets (line, 100, file_ptr) != NULL)
 	{
 		line_number++;
+		//Check if pattern exists and if the except flag is set
 		if ((strstr (line, pattern) != NULL) != (options & 1))
 		{
 			printf ("%s-> ", file_name);
