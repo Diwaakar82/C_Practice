@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include <string.h>
+#include <ctype.h>
 #include <stdlib.h>
 
 //Function to remove name and definition from the looku and install tables.
@@ -13,6 +14,34 @@ struct nlist
 	char *definition;
 	struct nlist *next;
 };
+
+//Write a getfloat function to handle floating point numbers
+char buffer [1000];
+int buffer_ptr = 0;
+
+//Get from buffer of cmd
+int getch() 
+{
+    return (buffer_ptr > 0) ? buffer [--buffer_ptr] : getchar ();
+}
+
+//Store in buffer
+void ungetch (int c) 
+{
+    if (buffer_ptr >= 1000)
+        printf ("ungetch: too many characters\n");
+    else
+        buffer [buffer_ptr++] = c;
+}
+
+//Store string in buffer
+void ungets (char input_str [])
+{
+	int len = strlen (input_str);
+
+	while (len)
+		ungetch (input_str [--len]);
+}
 
 //Generate hash value on the given string
 int hash (char *str)
@@ -48,7 +77,7 @@ struct nlist *lookup (char *str)
 //Print error mesage
 void error (int c, char *str)
 {
-	printf ("Error: %s\n", str)
+	printf ("Error: %s\n", str);
 	while (c != EOF && c != '\n')
 		c = getch ();
 }
@@ -61,45 +90,6 @@ void skipblanks ()
 	while ((c = getch ()) == ' ' || c == '\t');
 	
 	ungetch (c);
-}
-
-//Get the definition and install it into the table
-void getdef ()
-{
-	int c, i;
-	char define [100], directive [100], name [100];
-	
-	skipblanks ();
-	if (!isalpha (getword (directive)))
-		error (dir [0], "Expected directive after #");
-	else if (strcmp (directive, "define") == 0)
-	{
-		skipblanks ();
-		if (!isalpha (getword (name)))
-			error (name [0], "Name expected");
-		else
-		{
-			for (i = 0; i < 99; i++)
-				if ((define [i] = getch ()) == EOF || define [i] == '\n')
-					break;
-			define [i] = '\0';
-			
-			if (i < = 0)
-				error ('\n', "Incomplete definition");
-			else
-				install (name, define);
-		}
-	}
-	else if (strcmp (dir, "undef") == 0)
-	{
-		skipblanks ();
-		if (!isalpha (getword (name)))
-			error (name [0], "Non alpha character in undef");
-		else
-			undef (name);
-	}
-	else
-		error (dir [0], "Expected directive after #");
 }
 
 //Add object to hash table
@@ -127,6 +117,74 @@ struct nlist *install (char *name, char *definition)
 	if ((ptr -> definition = strdup (definition)) == NULL)
 		return NULL;
 	return ptr;
+}
+
+//Skip commented characters
+int comment ()
+{
+	int c;
+	
+	while ((c = getch ()) != EOF)
+		if (c == '*')
+			if ((c = getch ()) == '/')
+				break;
+			else
+				ungetch (c); 
+		else if (c == '/')
+		{
+			while ((c = getch ()) != '\n');
+			break;
+		}
+		
+		return c;
+}
+
+//Get next word or character from input
+int getword (char *word)
+{
+	int c, d;
+	char *word_ptr = word;
+	
+	while (isspace (c = getch ()));
+	
+	if (c != EOF)
+		*word_ptr++ = c;
+		
+	if (isalpha (c) || c == '_')
+	{
+		for (; ; word_ptr++)
+			if (!isalnum (*word_ptr = getch ()) && *word_ptr != '_')
+			{
+				ungetch (*word_ptr);
+				break;
+			}
+	}
+	else if (c == '\'' || c == '"')
+	{
+		for (; ; word_ptr++)
+			if ((*word_ptr = getch ()) == '\\')
+				*++word_ptr = getch ();
+			else if (*word_ptr == c)
+			{
+				word_ptr++;
+				break;
+			}
+			else if (*word_ptr == EOF)
+				break;
+	}
+	
+	else if (c == '/')
+	{
+		if ((d = getch ()) == '*')
+			c = comment ();
+		else if (d == '/')
+			while ((c = getch ()) != '\n');
+		else
+			ungetch (d);
+	}
+	
+	*word_ptr = '\0';
+	return c;
 }
 
 //Remove name and defn from table
@@ -158,12 +216,51 @@ void undef (char *str)
 	}
 }
 
+//Get the definition and install it into the table
+void getdef ()
+{
+	int c, i;
+	char define [100], directive [100], name [100];
+	
+	skipblanks ();
+	if (!isalpha (getword (directive)))
+		error (directive [0], "Expected directive after #");
+	else if (strcmp (directive, "define") == 0)
+	{
+		skipblanks ();
+		if (!isalpha (getword (name)))
+			error (name [0], "Name expected");
+		else
+		{
+			for (i = 0; i < 99; i++)
+				if ((define [i] = getch ()) == EOF || define [i] == '\n')
+					break;
+			define [i] = '\0';
+			
+			if (i <= 0)
+				error ('\n', "Incomplete definition");
+			else
+				install (name, define);
+		}
+	}
+	else if (strcmp (directive, "undef") == 0)
+	{
+		skipblanks ();
+		if (!isalpha (getword (name)))
+			error (name [0], "Non alpha character in undef");
+		else
+			undef (name);
+	}
+	else
+		error (directive [0], "Expected directive after #");
+}
+
 int main(int argc, char *argv[]) 
 {
     char word [100];
     struct nlist *ptr;
     
-	while (getword (word, 100) != EOF)
+	while (getword (word) != EOF)
 	{
 		//begining of a preprocessor directive
 		if (strcmp (word, "#") == 0)
