@@ -21,7 +21,7 @@ int hash (char *str)
 	
 	while (*str)
 	{
-		hash_val = *str + 31 * hash_val;
+		hash_val = *str + (31 * hash_val);
 		str++;
 	}
 	
@@ -54,7 +54,6 @@ struct nlist *install (char *name, char *definition)
 	//Not already present in table
 	if ((ptr = lookup (name)) == NULL)
 	{
-		printf ("$");
 		ptr = (struct nlist *) malloc (sizeof (*ptr));
 		if (!ptr || (ptr -> name = strdup (name)) == NULL)
 			return NULL;
@@ -103,20 +102,26 @@ void undef (char *str)
 
 int main(int argc, char *argv[]) 
 {
-    struct nlist *table[4] = {(install ("key", "value")), 								  (install ("key1", "value1")),
-            				  (install ("key2", "value2")), 							  (install ("key3", "value3"))};
-
+	//Initializing 4 keys
+	hash_table [0] = install ("ABC", "value1");
+	hash_table [1] = install ("def", "value2");
+	hash_table [2] = install ("XYZ", "value3");
+	hash_table [3] = install ("mno", "value4");
+	
+	//Printing to check if installed correctly
     for (int i = 0; i < 4; i++)
         printf("%s -> %s\n", hash_table [i] -> name, hash_table [i] -> definition);
 
-	printf ("%d", hash ("key"));
-    undef ("key");
-    undef ("key3");
-
+	//Removing keys def and XYZ 
+    undef ("def");
+    undef ("XYZ");
+	
+	printf ("\n");
+	
+	//Search list using keys
     struct nlist *result;
-
-    char *keys [4] = {"key", "key1", "key2", "key3"};
-
+    char *keys [4] = {"ABC", "XYZ", "mno", "def"};
+    
     for (int i = 0; i < 4; i++) 
     {
         if ((result = lookup (keys [i])) == NULL) 
